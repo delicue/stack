@@ -18,6 +18,7 @@ public:
 	T& peek() const;
 	bool is_empty() const;
 	size_t size() const;
+	void clear();
 };
 
 template<typename T>
@@ -36,25 +37,37 @@ inline void Stack<T>::push(const T& element)
 template<typename T>
 inline void Stack<T>::pop()
 {
-	stack[top].reset();
-	--top;
+	if (top > 0) {
+		stack[top].reset();
+		--top;
+	}
 }
 
 template<typename T>
-inline T& Stack<T>::peek()
+inline T& Stack<T>::peek() const
 {
-	if (top > 0)
-		return *stack[top-1];
-	else
-		exit(EXIT_FAILURE);
+	try {
+		if (top > 0)
+			return *stack[top - 1];
+		throw std::exception("Empty stack.");
+	}
+	catch (std::exception& e) {
+		std::cerr << "Exception: " << e.what() << "\n\n";
+	}
 }
 
 template<typename T>
-inline bool Stack<T>::is_empty() {
+inline bool Stack<T>::is_empty() const {
 	return this->top == 0;
 }
 
 template<typename T>
-inline size_t Stack<T>::size() {
+inline size_t Stack<T>::size() const {
 	return top;
+}
+
+template<typename T>
+inline void Stack<T>::clear() {
+	while(!is_empty())
+		this->pop();
 }

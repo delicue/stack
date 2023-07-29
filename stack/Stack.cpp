@@ -5,39 +5,61 @@
 #include <string>
 #include "Stack.h"
 
-std::string& prompt(const std::string& msg)
+void process_input(const std::string& input, Stack<std::string>& stack)
 {
-    std::string cmd;
-    std::cout << msg << " ";
-    std::cin >> cmd;
-    return cmd;
+    if (input == "push") {
+        std::cout << "What is the name of the item you would like to add to the stack? ";
+        std::string item;
+        std::getline(std::cin, item);
+
+        stack.push(item);
+        std::cout << item << " pushed onto the stack.\n";
+    }
+    else if (input == "pop") {
+        stack.pop();
+        std::cout << "Removed the top item from the stack.\n";
+    }
+    else if (input == "peek") {
+        if (stack.size() > 0)
+            std::cout << "Took a peek and it looks like `" << stack.peek() << "` is at the top of the stack.\n";
+        else
+            std::cerr << "Stack is empty!\n";
+    }
+    else if (input == "size") {
+        std::cout << "Stack has " << stack.size() << " items.\n";
+    }
+    else if (input == "clear") {
+        stack.clear();
+        std::cout << "Removed all items from the stack. Stack is now empty.\n";
+    }
+    else if(input != "exit")
+        std::cout << "INVALID INPUT\n";
 }
-void display_menu(const std::string &stack_item, const Stack<std::string>& stack)
+void display_menu(Stack<std::string>&& stack)
 {
-    std::cout << "There are " << stack.size() << " of the item " << stack_item << " currently.\n";
-    std::cout << "Menu:\n"
-        << "push (stacks a " << stack_item << " on top)"
-        << "peek (looks at the top of the stack, returning
-    auto command = prompt("What would you like to do ?");
+    std::cout << "There are " << stack.size() << " items, currently.\n";
+
+    std::string command;
+
+    do {
+        command = "";
+        std::cout << "Menu:\n"
+            << "\tpush\t(stacks an item on top)\n"
+            << "\tpeek\t(looks at the top of the stack and displays the name of it)\n"
+            << "\tpop\t(removes the item from the top of the stack)\n"
+            << "\tsize\t(displays the size of the stack)\n"
+            << "\tclear\t(clears the whole stack)\n"
+            << "\texit\n"
+            << "What would you like to do? ";
+        std::getline(std::cin, command);
+        process_input(command, stack);
+        std::cout << command + "\n\n";
+    } while (command != "exit");
 }
 
 int main()
 {
-    Stack<int> stack;
-
     std::cout << "This is a Stacking program. You get to stack an item.\n";
-    prompt("What would you like to stack?");
-
+    display_menu(Stack<std::string>());
     std::cout << std::endl;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
